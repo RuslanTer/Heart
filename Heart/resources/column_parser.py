@@ -40,14 +40,22 @@ def get_column_name():
                 else:
                     name = transliterate(sheet.col_values(colnum)[0])
                     field_type = 'models.TextField()'
-            number = ''
-            name = name.replace('…', '')
-            name = name.replace('.', '')
-            for n in name:
-                if n.isdigit() or n=='_':
-                    number += n
-                else:
-                    break
-            name = name[len(number):]+number
+
+            name = modify_name(name, colnum, sheets)
             my_file.writelines("\n"+name+' = '+ field_type)
+
+
+def modify_name(name, colnum, sheets):
+    number = ''
+    name = name.replace('…', '')
+    name = name.replace('.', '')
+    for n in name:
+        if n.isdigit() or n == '_':
+            number += n
+        else:
+            break
+    name = name[len(number):] + number + '_' + str(colnum) + '_' + str(sheets)
+    return name
+
+
 get_column_name()
