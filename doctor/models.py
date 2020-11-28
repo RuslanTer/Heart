@@ -1,5 +1,5 @@
 from django.db import models
-from patient import Patient
+from patient.models import Patient
 
 class Doctor(models.Model):
     ID = models.CharField(max_length=254)
