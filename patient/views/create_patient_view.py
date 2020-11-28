@@ -23,7 +23,7 @@ class CreatePatients(APIView):
         print('debug')
         data = request.data
         create_object(data)
-        Patient.objects.get(ID=data['ID_0_0'])
-        PatientCharacters.objects.get(ID_0_0=data['ID_0_0'])
+
+        PatientCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
 
         return Response(200)
