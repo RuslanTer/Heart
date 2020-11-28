@@ -2,7 +2,7 @@ from rest_framework import serializers
 from patient.models import PatientCharacters
 
 class PatientCharactersSerializer(serializers.Serializer):
-    Pol_1_1 = serializers.CharField()
+
     Semya_2_1 = serializers.CharField()
     Religiya_5_1 = serializers.CharField()
     Mesto_prozhivaniya_1gorod_2selo_1_0 = serializers.CharField()
