@@ -1,6 +1,11 @@
 from rest_framework import serializers
+from patient.models import Patient
 
 class PatientSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    content = serializers.CharField(max_length=200)
-    created = serializers.DateTimeField()
+
+    ID = serializers.CharField()
+    name = serializers.CharField()
+
+    class Meta:
+        model = Patient
+        fields = '__all__'

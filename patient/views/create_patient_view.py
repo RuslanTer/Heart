@@ -4,6 +4,7 @@ from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
 from Heart.resources.value_parse import create_object
 from patient.models import Patient, PatientCharacters, PatientImmutableCharacters, PatientDiet, PatienDietBase, PatientInternet
+from ..serializers.patiencharacters_serializer import PatientCharactersSerializer
 
 
 
@@ -22,7 +23,8 @@ class CreatePatients(APIView):
     def put(self, request):
         data = request.data
         create_object(data)
-        PatientCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
+        first = PatientCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
+        all = PatientCharacters.objects.all()
         PatientImmutableCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
         PatientDiet.objects.filter(ID_0_11=data['ID_0_0']).order_by('-date').first()
         PatienDietBase.objects.filter(ID_0_9=data['ID_0_0']).order_by('-date').first()

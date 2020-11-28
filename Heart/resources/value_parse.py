@@ -72,7 +72,6 @@ def create_object(dict):
         value = item[1]
         if value=='':
             value = None
-
         if key in dir(PatientImmutableCharacters):
             if (PatientImmutableCharacters._meta.get_field(key).get_internal_type()=='FloatField' and type(value)!=float):
                 value = -1
@@ -110,6 +109,7 @@ def create_object(dict):
 
     _pc_.save()
     pc.save()
+    print('save')
     p.save()
     _pDiet_.save()
     _pDietBase_.save()
