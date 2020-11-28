@@ -20,10 +20,11 @@ class CreatePatients(APIView):
         return Response(200)
 
     def put(self, request):
-        print('debug')
         data = request.data
         create_object(data)
-
         PatientCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
-
+        PatientImmutableCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
+        PatientDiet.objects.filter(ID_0_11=data['ID_0_0']).order_by('-date').first()
+        PatienDietBase.objects.filter(ID_0_9=data['ID_0_0']).order_by('-date').first()
+        PatientInternet.objects.filter(ID_0_10=data['ID_0_0']).order_by('-date').first()
         return Response(200)
