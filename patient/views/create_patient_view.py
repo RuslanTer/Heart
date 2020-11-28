@@ -43,4 +43,5 @@ class CreatePatients(APIView):
             result[item[0]] = item[1]
         for item in _pc_.items():
             result[item[0]] = item[1]
+        AI_RESULT = result
         return Response(result)
