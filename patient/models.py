@@ -1,11 +1,12 @@
 from django.db import models
-
+import datetime
 
 class Patient(models.Model):
     ID = models.CharField(max_length=254, null = True)
     name = models.CharField(max_length=254, null = True)
 
 class PatientImmutableCharacters(models.Model):
+    date =models.DateTimeField(default=datetime.datetime.now)
     ID_0_0 = models.CharField(max_length=254, null = True)
     Vozrast_3_0 = models.FloatField(null=True, blank=True)
     Pol_1_1 = models.CharField(max_length=254, null = True)
@@ -37,6 +38,7 @@ class PatientImmutableCharacters(models.Model):
     Rak_bratya_sestry_uchastok_83_2 = models.CharField(max_length=254, null = True)
 
 class PatientCharacters(models.Model):
+    date = models.DateTimeField(default=datetime.datetime.now)
     ID_0_0 = models.CharField(max_length=254, null = True)
     Mesto_prozhivaniya_1gorod_2selo_1_0 = models.FloatField(null=True, blank=True)
     Data_rozhdeniya_2_0 = models.CharField(max_length=254, null = True)
@@ -450,6 +452,7 @@ class PatientCharacters(models.Model):
     Sidya_v_den_35_8 = models.FloatField(null=True, blank=True)
 
 class PatienDietBase(models.Model):
+    date = models.DateTimeField(default=datetime.datetime.now)
     ID_0_9 = models.CharField(max_length=254, null=True)
     Moloko_do_11_1_9 = models.CharField(max_length=254, null = True)
     Moloko_do_252_2_9 = models.CharField(max_length=254, null = True)
@@ -637,6 +640,7 @@ class PatienDietBase(models.Model):
     Dobavlenie_soli184_184_9 = models.CharField(max_length=254, null = True)
 
 class PatientInternet(models.Model):
+    date = models.DateTimeField(default =datetime.datetime.now)
     ID_0_10 = models.CharField(max_length=254, null=True)
     Kuryat_bolnica1_1_10 = models.CharField(max_length=254, null=True)
     Kuryat_ostanovka1_2_10 = models.CharField(max_length=254, null=True)
@@ -840,6 +844,7 @@ class PatientInternet(models.Model):
 
 
 class PatientDiet(models.Model):
+    date = models.DateTimeField(default =datetime.datetime.now)
     ID_0_11 = models.CharField(max_length=254, null = True)
     Produkt_0_11 = models.CharField(max_length=254, null = True)
     Snyatoe_moloko_do_01_zhirnosti_200g1_1_11 = models.CharField(max_length=254, null=True)

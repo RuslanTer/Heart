@@ -1,3 +1,2 @@
 from django.shortcuts import render
-
-# Create your views here.
+from .views.create_patient_view import CreatePatients
