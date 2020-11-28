@@ -32,11 +32,11 @@ def get_column_name():
             if type(sheet.col_values(colnum)[2]) == str:
                 if len(sheet.col_values(colnum)[2])<100:
                     name = transliterate(sheet.col_values(colnum)[0])
-                    field_type = 'models.CharField(max_length=254)'
+                    field_type = 'models.CharField(max_length=254, null = True)'
             else:
                 if type(sheet.col_values(colnum)[2]) == float:
                     name = transliterate(sheet.col_values(colnum)[0])
-                    field_type = 'models.FloatField()'
+                    field_type = 'models.FloatField(null=True, blank=True)'
                 else:
                     name = transliterate(sheet.col_values(colnum)[0])
                     field_type = 'models.TextField()'

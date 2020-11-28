@@ -1,15 +1,15 @@
-# coding: cp1251
+# coding: utf-8
 import xlrd
 from django.db import models
-from patient.models import Patient, PatientCharacters
-
+from patient.models import Patient, PatientCharacters, PatientImmutableCharacters, PatientDiet, PatienDietBase, PatientInternet
+from russian_names import RussianNames
 
 
 
 
 def modify_name(name, colnum, sheets):
     number = ''
-    name = name.replace('Ö', '')
+    name = name.replace('‚Ä¶', '')
     name = name.replace('.', '')
     for n in name:
         if n.isdigit() or n == '_':
@@ -17,24 +17,28 @@ def modify_name(name, colnum, sheets):
         else:
             break
     name = name[len(number):] + number + '_' + str(colnum) + '_' + str(sheets)
+
+    name = name.replace('__', '_')
+    if len(name) > 63:
+        name = name[len(name) - 63:]
     return name
 
 def transliterate(name):
-    # —ÎÓ‡‚¸ Ò Á‡ÏÂÌ‡ÏË
-    slovar = {'‡': 'a', '·': 'b', '‚': 'v', '„': 'g', '‰': 'd', 'Â': 'e', '∏': 'yo',
-              'Ê': 'zh', 'Á': 'z', 'Ë': 'i', 'È': 'i', 'Í': 'k', 'Î': 'l', 'Ï': 'm', 'Ì': 'n',
-              'Ó': 'o', 'Ô': 'p', '': 'r', 'Ò': 's', 'Ú': 't', 'Û': 'u', 'Ù': 'f', 'ı': 'h',
-              'ˆ': 'c', '˜': 'ch', '¯': 'sh', '˘': 'sch', '˙': '', '˚': 'y', '¸': '', '˝': 'e',
-              '˛': 'u', 'ˇ': 'ya', '¿': 'A', '¡': 'B', '¬': 'V', '√': 'G', 'ƒ': 'D', '≈': 'E', '®': 'YO',
-              '∆': 'ZH', '«': 'Z', '»': 'I', '…': 'I', ' ': 'K', 'À': 'L', 'Ã': 'M', 'Õ': 'N',
-              'Œ': 'O', 'œ': 'P', '–': 'R', '—': 'S', '“': 'T', '”': 'U', '‘': 'F', '’': 'H',
-              '÷': 'C', '◊': 'CH', 'ÿ': 'SH', 'Ÿ': 'SCH', '⁄': '', '€': 'y', '‹': '', '›': 'E',
-              'ﬁ': 'U', 'ﬂ': 'YA', ',': '', '?': '', ' ': '_', '~': '', '!': '', '@': '', '#': '',
+    name=str(name)
+    # –°–ª–æ–∞–≤—Ä—å —Å –∑–∞–º–µ–Ω–∞–º–∏
+    slovar = {'–∞': 'a', '–±': 'b', '–≤': 'v', '–≥': 'g', '–¥': 'd', '–µ': 'e', '—ë': 'yo',
+              '–∂': 'zh', '–∑': 'z', '–∏': 'i', '–π': 'i', '–∫': 'k', '–ª': 'l', '–º': 'm', '–Ω': 'n',
+              '–æ': 'o', '–ø': 'p', '—Ä': 'r', '—Å': 's', '—Ç': 't', '—É': 'u', '—Ñ': 'f', '—Ö': 'h',
+              '—Ü': 'c', '—á': 'ch', '—à': 'sh', '—â': 'sch', '—ä': '', '—ã': 'y', '—å': '', '—ç': 'e',
+              '—é': 'u', '—è': 'ya', '–ê': 'A', '–ë': 'B', '–í': 'V', '–ì': 'G', '–î': 'D', '–ï': 'E', '–Å': 'YO',
+              '–ñ': 'ZH', '–ó': 'Z', '–ò': 'I', '–ô': 'I', '–ö': 'K', '–õ': 'L', '–ú': 'M', '–ù': 'N',
+              '–û': 'O', '–ü': 'P', '–†': 'R', '–°': 'S', '–¢': 'T', '–£': 'U', '–§': 'F', '–•': 'H',
+              '–¶': 'C', '–ß': 'CH', '–®': 'SH', '–©': 'SCH', '–™': '', '–´': 'y', '–¨': '', '–≠': 'E',
+              '–Æ': 'U', '–Ø': 'YA', ',': '', '?': '', ' ': '_', '~': '', '!': '', '@': '', '#': '',
               '$': '', '%': '', '^': '', '&': '', '*': '', '(': '', ')': '', '-': '', '=': '', '+': '',
-              ':': '', ';': '', '<': '', '>': '', r'\'': '', '"': '', r'\\': '', '/': '', 'π': '',
-              '[': '', ']': '', '{': '', '}': '', '¥': '', 'ø': '', '∫': '', '•': 'g', 'Ø': 'i',
-              '™': 'e', 'ó': ''}
-    name = ''
+              ':': '', ';': '', '<': '', '>': '', '\'': '', '"': '', '\\': '', '/': '', '‚Ññ': '',
+              '[': '', ']': '', '{': '', '}': '', '“ë': '', '—ó': '', '—î': '', '“ê': 'g', '–á': 'i',
+              '–Ñ': 'e', '‚Äî': ''}
     for key in slovar:
         name = name.replace(key, slovar[key])
     return name
@@ -49,15 +53,64 @@ def create_rows():
             for colnum in range(sheet.ncols):
                 name = transliterate(sheet.col_values(colnum)[0])
                 name = modify_name(name, colnum, sheets)
-                dict[name] = sheet.col_values(colnum)[2]
+                dict[name] = sheet.col_values(colnum)[rows]
+        create_object(dict)
+        print(rows,'/',1590)
         dict = {}
 
 
 def create_object(dict):
-    print(dict)
-    p = Patient.objects.create(ID=dict['ID_0_0'])
+    p = Patient.objects.create(ID=dict['ID_0_0'], name = RussianNames().get_person())
     pc = PatientCharacters.objects.create(ID_0_0=dict['ID_0_0'])
-    for key, value in dict:
-        pc.objects.update(getattr(PatientCharacters, key), value)
-    pc.objects.save()
-    p.objects.save()
+    _pc_ = PatientImmutableCharacters.objects.create(ID_0_0=dict['ID_0_0'])
+    _pDiet_ = PatientDiet.objects.create(ID_0_11=dict['ID_0_0'])
+    _pDietBase_ = PatienDietBase.objects.create(ID_0_9=dict['ID_0_0'])
+    _pcI_ = PatientInternet.objects.create(ID_0_10=dict['ID_0_0'])
+
+    for item in dict.items():
+        key = item[0]
+        value = item[1]
+        if value=='':
+            value = None
+
+        if key in dir(PatientImmutableCharacters):
+            if (PatientImmutableCharacters._meta.get_field(key).get_internal_type()=='FloatField' and type(value)!=float):
+                value = -1
+            if (PatientImmutableCharacters._meta.get_field(key).get_internal_type()=='CharField' and type(value)!=str):
+                value = str(value)
+            setattr(_pc_, key, value)
+
+        if key in dir(PatientCharacters):
+            if (PatientCharacters._meta.get_field(key).get_internal_type()=='FloatField' and type(value)!=float):
+                value = -1
+            if (PatientCharacters._meta.get_field(key).get_internal_type()=='CharField' and type(value)!=str):
+                value = str(value)
+            setattr(pc, key, value)
+
+        if key in dir(PatientDiet):
+            if (PatientDiet._meta.get_field(key).get_internal_type() == 'FloatField' and type(value) != float):
+                value = -1
+            if (PatientDiet._meta.get_field(key).get_internal_type() == 'CharField' and type(value) != str):
+                value = str(value)
+            setattr(_pDiet_, key, value)
+
+        if key in dir(PatienDietBase):
+            if (PatienDietBase._meta.get_field(key).get_internal_type() == 'FloatField' and type(value) != float):
+                value = -1
+            if (PatienDietBase._meta.get_field(key).get_internal_type() == 'CharField' and type(value) != str):
+                value = str(value)
+            setattr(_pDietBase_, key, value)
+
+        if key in dir(PatientInternet):
+            if (PatientInternet._meta.get_field(key).get_internal_type() == 'FloatField' and type(value) != float):
+                value = -1
+            if (PatientInternet._meta.get_field(key).get_internal_type() == 'CharField' and type(value) != str):
+                value = str(value)
+            setattr(_pcI_, key, value)
+
+    _pc_.save()
+    pc.save()
+    p.save()
+    _pDiet_.save()
+    _pDietBase_.save()
+    _pcI_.save()

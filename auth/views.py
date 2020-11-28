@@ -6,7 +6,9 @@ from Heart.resources.value_parse import create_rows
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    create_rows()
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 
