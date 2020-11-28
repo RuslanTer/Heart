@@ -28,10 +28,10 @@ class CreatePatients(APIView):
     def put(self, request):
         data = request.data
         create_object(data)
-        p = Patient.objects.filter(ID=data['ID_0_0']).last()
-        pc = PatientCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').last()
-        _pc_ = PatientImmutableCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').last()
-        pcInternet = PatientInternet.objects.filter(ID_0_10=data['ID_0_0']).order_by('-date').last()
+        p = Patient.objects.filter(ID=data['ID_0_0']).first()
+        pc = PatientCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
+        _pc_ = PatientImmutableCharacters.objects.filter(ID_0_0=data['ID_0_0']).order_by('-date').first()
+        pcInternet = PatientInternet.objects.filter(ID_0_10=data['ID_0_0']).order_by('-date').first()
         p = PatientSerializer(p).data
         pc = PatientCharactersSerializer(pc).data
         _pc_ = PatientImmutableSerializer(_pc_).data
