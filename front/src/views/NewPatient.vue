@@ -353,16 +353,124 @@
                 v-btn(text width="50%" @click="step=4"  coloк="#19193E").text-btn Назад
 
     v-card-text(v-else)
-      analys(:bols="[{name: 'Стенокардия', coeff: 0.786},{name: 'ОМНК', coeff: 3.4},{name: 'Сердечная недостаточность', coeff: 7}]" rec="Первичная профилактика инсульта – это комплекс мероприятий направленных на предотвращение развития острых нарушений церебрального кровообращения – геморрагического инсульта или инфаркта мозга (ишемического инсульта) - ведение здорового образа жизни, рациональное питание, поддержание адекватной массы тела, воздержание от курения и адекватное медикаментозное лечение заболеваний сердца и сосудов, сахарного диабета и других заболеваний.")
+      v-card(flat style="background-color: rgba(0,0,0, 0)").elevation-0
+        v-row
+          v-col(lg="5")
+            v-card.elevation-0
+              v-card-title.text-style-patient.pt-6 ПЕРСОНАЛЬНЫЕ РЕКОМЕНДАЦИИ
+              v-card-text.pt-12  {{rec}}
+          v-col(lg="7")
+            v-row
+              v-col(lg="6").pt-0
+                v-card().elevation-0
+                  v-card-title Артериальная гипертензия
+                  v-card-text
+                    v-sparkline(:value="[bols.model1/2, bols.model1]"
+                      :gradient="gradient"
+                      :smooth="radius || false"
+                      :padding="padding"
+                      :line-width="width"
+                      :stroke-linecap="lineCap"
+                      :gradient-direction="gradientDirection"
+                      :fill="fill"
+                      :type="type"
+                      :auto-line-width="autoLineWidth"
+                      auto-draw)
+                      template(v-slot:label="item") {{ item.value }}
+              v-col(lg="6").pt-0
+                v-card().elevation-0
+                  v-card-title ОНМК
+                  v-card-text
+                    v-sparkline(:value="[bols.model2/2, bols.model2]"
+                      :gradient="gradient"
+                      :smooth="radius || false"
+                      :padding="padding"
+                      :line-width="width"
+                      :stroke-linecap="lineCap"
+                      :gradient-direction="gradientDirection"
+                      :fill="fill"
+                      :type="type"
+                      :auto-line-width="autoLineWidth"
+                      auto-draw)
+                      template(v-slot:label="item") {{ item.value }}
+              v-col(lg="6").pt-0
+                v-card().elevation-0
+                  v-card-title Сердечная недостаточность
+                  v-card-text
+                    v-sparkline(:value="[bols.model3/2, bols.model3]"
+                      :gradient="gradient"
+                      :smooth="radius || false"
+                      :padding="padding"
+                      :line-width="width"
+                      :stroke-linecap="lineCap"
+                      :gradient-direction="gradientDirection"
+                      :fill="fill"
+                      :type="type"
+                      :auto-line-width="autoLineWidth"
+                      auto-draw)
+                      template(v-slot:label="item") {{ item.value }}
+              v-col(lg="6").pt-0
+                v-card().elevation-0
+                  v-card-title Стенокардия/ИБС/Инфаркт миокарда
+                  v-card-text
+                    v-sparkline(:value="[bols.model4/2, bols.model4]"
+                      :gradient="gradient"
+                      :smooth="radius || false"
+                      :padding="padding"
+                      :line-width="width"
+                      :stroke-linecap="lineCap"
+                      :gradient-direction="gradientDirection"
+                      :fill="fill"
+                      :type="type"
+                      :auto-line-width="autoLineWidth"
+                      auto-draw)
+                      template(v-slot:label="item") {{ item.value }}
+              v-col(lg="6").pt-0
+                v-card().elevation-0
+                  v-card-title Прочие заболевания сердца
+                  v-card-text
+                    v-sparkline(:value="[bols.model5/2, bols.model5]"
+                      :gradient="gradient"
+                      :smooth="radius || false"
+                      :padding="padding"
+                      :line-width="width"
+                      :stroke-linecap="lineCap"
+                      :gradient-direction="gradientDirection"
+                      :fill="fill"
+                      :type="type"
+                      :auto-line-width="autoLineWidth"
+                      auto-draw)
+                      template(v-slot:label="item") {{ item.value }}
 </template>
 
 <script>
 import Analys from "@/views/Analys";
 import axios from "axios";
+const gradients = [
+  ['#222'],
+  ['#42b3f4'],
+  ['red', 'orange', 'yellow'],
+  ['purple', 'violet'],
+  ['#00c6ff', '#F0F', '#FF0'],
+  ['#f72047', '#ffd200', '#1feaea'],
+]
 export default {
   name: "NewPatient",
   components: {Analys},
   data: () => ({
+    bols: {model1: 12, model2: 13, model3: 13, model4: 13, model5: 13},
+    picker: new Date().toISOString().substr(0, 7),
+    width: 2,
+    radius: 10,
+    padding: 8,
+    lineCap: 'round',
+    gradient: gradients[5],
+    gradientDirection: 'top',
+    gradients,
+    fill: false,
+    type: 'trend',
+    autoLineWidth: false,
+    rec: " Первичная профилактика инсульта – это комплекс мероприятий направленных на предотвращение развития острых нарушений церебрального кровообращения – геморрагического инсульта или инфаркта мозга (ишемического инсульта) - ведение здорового образа жизни, рациональное питание, поддержание адекватной массы тела, воздержание от курения и адекватное медикаментозное лечение заболеваний сердца и сосудов, сахарного диабета и других заболеваний.",
     work: false,
     check:false,
     dontwork: false,
@@ -489,7 +597,7 @@ export default {
   methods: {
     async createPatient() {
       this.check=true
-      const { data } = await axios.put('http://194.67.116.92:8080/api/patient/', {
+      const {data} = await axios.put('http://194.67.116.92:8080/api/patient/', {
         ID_0_0: this.id ,
         Pol_1_1: this.sex ,
         Semya_2_1: this.semya ,
@@ -581,7 +689,9 @@ export default {
         Sovety_fiz_aktivnosti_deti22_170_10: this.sovet_det ,
         Sovety_fiz_aktivnosti_podrostki22_171_10: this.sovet_pod ,
       })
-      console.log(data)
+      if (data!==null)
+
+      {this.models = data}
     }
   }
 }
