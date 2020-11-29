@@ -458,7 +458,7 @@ export default {
   name: "NewPatient",
   components: {Analys},
   data: () => ({
-    bols: {model1: 12, model2: 13, model3: 13, model4: 13, model5: 13},
+    bols: {model1: 12, model2: 13, model3: 14, model4: 7, model5: 1},
     picker: new Date().toISOString().substr(0, 7),
     width: 2,
     radius: 10,
