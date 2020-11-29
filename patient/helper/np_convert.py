@@ -1,11 +1,11 @@
 import numpy as np
 from PIL import Image
+from .resolver import predict
 
 from patient.models import Patient, PatientCharacters, PatientImmutableCharacters, PatientDiet, PatienDietBase, PatientInternet
 from ..serializers.patiencharacters_serializer import PatientCharactersSerializer
 
 def fun(ID_0_0):
-
     pc = PatientCharacters.objects.filter(ID_0_0=ID_0_0).order_by('-date').first()
     paths = []
     if pc.Arterialnaya_gipertenziya_13_1 is None:
@@ -62,5 +62,5 @@ def fun(ID_0_0):
 
     img = Image.fromarray(array, 'RGB')
     img = img.resize((224, 224), Image.ANTIALIAS)
-    for path in paths:
-        img.save(path+str(ID_0_0)+'.png')
+    json = predict(img)
+    return json

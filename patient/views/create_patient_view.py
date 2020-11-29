@@ -8,6 +8,7 @@ from ..serializers.patiencharacters_serializer import PatientCharactersSerialize
 from ..serializers.patien_serializer import PatientSerializer
 from ..serializers.patient_immutable_serializer import PatientImmutableSerializer
 from ..serializers.patient_internet_serializer import PatientInternetSerializer
+from ..helper.np_convert import fun
 
 
 
@@ -44,4 +45,5 @@ class CreatePatients(APIView):
         for item in _pc_.items():
             result[item[0]] = item[1]
         AI_RESULT = result
-        return Response(result)
+        json = fun(pc['ID_0_0'])
+        return Response(json)
